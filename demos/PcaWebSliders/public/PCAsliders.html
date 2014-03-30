@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>PCA sliders</title>
+	<link rel="stylesheet" href="./stylesheets/themes/base/jquery.ui.all.css">
+	<script src="./javascripts/jquery-1.9.1.js"></script>
+	<script src="./javascripts/jquery.ui.core.js"></script>
+	<script src="./javascripts/jquery.ui.widget.js"></script>
+	<script src="./javascripts/jquery.ui.mouse.js"></script>
+	<script src="./javascripts/jquery.ui.slider.js"></script>
+	<link rel="stylesheet" href="./stylesheets/demos.css">
+	<style>
+	.sliderblock {
+		height:200px;
+	}
+
+	#leds span {
+		height:120px; float:left; margin:15px
+	}
+	#motors span {
+		height:120px; float:left; margin:15px
+	}
+	#ledbar {background-color: #AACFFA;}
+
+	</style>
+	<script>
+	$(function() {
+
+		// setup graphic EQ
+		$( "#leds > span" ).each(function() {
+			// read initial values from markup and remove that
+			var value = parseInt( $( this ).text(), 10 );
+			$( this ).empty().slider({
+				value: value,
+				min: 0,
+				max: 4095,
+				range: "min",
+				animate: true,
+				orientation: "vertical"
+			});
+		});
+			$( "#motors > span" ).each(function() {
+			// read initial values from markup and remove that
+			var value = parseInt( $( this ).text(), 10 );
+			$( this ).empty().slider({
+				value: value,
+				min: 105,
+				max: 490,
+				range: "min",
+				animate: true,
+				orientation: "vertical"
+			});
+		});
+	});
+	$(function() {
+	$(".redled .ui-slider-handle").css("background", "red");
+	$(".yellowled .ui-slider-handle").css("background", "yellow");
+	$(".greenled .ui-slider-handle").css("background", "green");
+	$(".whiteled .ui-slider-handle").css("background", "white");
+	$(".redled .ui-slider-range").css("background", "#ffc9c9");
+	$(".yellowled .ui-slider-range").css("background", "#fcfcbd");
+	$(".greenled .ui-slider-range").css("background", "#aafaaa");
+	$(".whiteled .ui-slider-range").css("background", "#f3f3f3");
+	$(".stdservo .ui-slider-handle").css("background", "orange");
+	$(".stdservo .ui-slider-range").css("background", "#FFD280");
+	$(".contservo .ui-slider-handle").css("background", "brown");
+	$(".contservo .ui-slider-range").css("background", "#CCA3A3");
+
+});
+	</script>
+</head>
+<body>
+<div id="ledblock" class="sliderblock">
+<p class="ui-state-default ui-corner-all ui-helper-clearfix" style="padding:4px;">
+	<span  class="ui-icon ui-icon-grip-solid-horizontal" style="float:left; margin:-2px 5px 0 0;"></span>
+	LEDs
+</p>
+
+<div id="leds">
+	<span class="redled">0</span>
+	<span class="redled">0</span>
+	<span class="yellowled">0</span>
+	<span class="yellowled">0</span>
+	<span class="greenled">0</span>
+	<span class="greenled">0</span>
+	<span class="whiteled">0</span>
+	<span class="whiteled">0</span>
+</div>
+</div>
+<div id="motoblock" class="sliderblock">
+<p class="ui-state-default ui-corner-all" style="padding:4px;margin-top:4em;">
+	<span class="ui-icon ui-icon-grip-solid-horizontal" style="float:left; margin:-2px 5px 0 0;"></span>
+	Motors
+</p>
+
+<div id="motors">
+	<span class="stdservo">200</span>
+	<span class="stdservo">200</span>
+	<span class="stdservo">200</span>
+	<span class="stdservo">200</span>
+	<span class="contservo">307</span>
+	<span class="contservo">307</span>
+	<span class="contservo">307</span>
+	<span class="contservo">307</span>
+</div>
+<div>
+</body>
+</html>

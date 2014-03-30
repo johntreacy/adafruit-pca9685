@@ -1,0 +1,88 @@
+body {
+  font-size: 65%;
+  font-family: "Trebuchet MS", "Arial", "Helvetica", "Verdana", "sans-serif";
+}
+
+body > div {
+  margin-left: 10%;
+  margin-right: 30%
+}
+table {
+  font-size: 1em;
+}
+
+.sliderblock {
+  height:200px;
+}
+
+.ui-tooltip {
+  width: 60px;
+}
+
+.sliderblock p { 
+  width: 320px;
+  text-align: center;
+  font-size: medium;
+}
+
+#leds span {
+  height:120px; float:left; margin:15px; background:#f3f3f3
+}
+
+#motors span {
+  height:120px; float:left; margin:15px; background:#f3f3f3
+}
+
+.redled .ui-slider-handle { 
+  background: red;
+}
+.redled .ui-slider-range {
+  background: #ffc9c9;
+}
+
+.yellowled .ui-slider-handle {
+  background: yellow; 
+}
+.yellowled .ui-slider-range {
+  background: #fcfcbd;
+}
+
+.greenled .ui-slider-handle {
+  background: green;
+}
+.greenled .ui-slider-range {
+  background: #aafaaa;
+}
+
+.blueled .ui-slider-handle {
+  background: blue;
+}
+.blueled .ui-slider-range {
+    background: #99ccff;
+}
+.whiteled .ui-slider-handle {
+  background: white;
+}
+.whiteled .ui-slider-range {
+    background: white;
+}
+
+.stdservo .ui-slider-handle {
+  background: orange;
+}
+.stdservo .ui-slider-range {
+  background: #FFD280;
+}
+
+.contservo .ui-slider-handle {
+  background: brown;
+}
+.contservo .ui-slider-range {
+  background: #CCA3A3;
+}
+
+#dot {
+  font-family: Webdings;
+  font-size: 36pt;
+  color: green
+}

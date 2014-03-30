@@ -1,0 +1,14 @@
+{
+  "name": "adafruit-pca9685",
+  "version": "0.0.1",
+  "main": "adafruit-pca9685.js",
+  "author": {
+    "name": "John Treacy"
+  },
+  "description": "PWM module for controlling the Adafruit 16-channel 12-bit PWM/Servo driver",
+  "dependencies": {
+    "i2c": "~0.1.4",
+    "sleep": "~1.1.3"
+  },
+  "readme": "Adafruit PWM"
+}

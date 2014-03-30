@@ -1,0 +1,66 @@
+<!doctype html>
+
+<!-- Sample page to exercise the Adafruit 12-bit PWM PCA9685 driver 
+  -- Author: John Treacy
+  -- Copyright 2013 John Treacy
+ -->
+
+<!-- Structure is a row of sliders for LEDs followe by a row for servos
+  -- An initial value can be in the text of the span, if not present defaults get computed
+  -- For LEDs the default is 0 and for servos it is 50% between minval and maxval
+  -- Range of the sliders for servos can be set by adding minval and maxval attributes
+  -- or by values looked up by servo name in the object motorCap. If neither is found, defaults
+  -- are chosen as 1000 and 2000 microseconds
+  -- the class is used to decorate the sliders - see ./stylesheets/pcafaders.css
+ -->
+
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<title>PCA sliders</title>
+	<link rel="stylesheet" href="./stylesheets/jquery-ui/jquery-ui-1.10.3.custom.css">
+	<script src="./javascripts/jquery-1.9.1.js"></script>
+	<script src="./javascripts/jquery-ui-1.10.3.custom.js"></script>
+	<script src="/socket.io/socket.io.js" type='text/javascript'></script>
+	<script src="./javascripts/pcaslider.js"></script>
+	<link rel="stylesheet" href="./stylesheets/pcafaders.css">
+  </head>
+  <body>
+    <div id="ledblock" class="sliderblock">
+      <p class="ui-state-default ui-corner-all ui-helper-clearfix" style="padding:4px;">
+	LEDs
+      </p>
+      <div id="leds">
+	<span class="redled" channel="0"></span>
+	<span class="redled" channel="1">0</span>
+	<span class="yellowled" channel="2">0</span>
+	<span class="yellowled" channel="3">0</span>
+	<span class="greenled" channel="4">0</span>
+	<span class="greenled" channel="5">0</span>
+	<span class="whiteled" channel="6">0</span>
+	<span class="whiteled" channel="7">0</span>
+      </div>
+    </div>
+
+    <div id="motoblock" class="sliderblock">
+      <p class="ui-state-default ui-corner-all" style="padding:4px;margin-top:4em;">
+	Motors
+      </p>
+      <div id="motors">
+	<span class="stdservo" channel="8"  servotype="Tower Pro MG995"></span>
+	<span class="stdservo" channel="9"  servotype="Parallax Standard" >1450</span>
+	<span class="stdservo" channel="10" servotype="Tower Pro SG92R" >1340</span>
+	<span class="stdservo" channel="11" servotype="Tower Pro SG92R">1340</span>
+<!--	<span class="contservo" channel="12" >1500</span>
+	<span class="contservo" channel="13" minval="1300" maxval="1700">1500</span>
+-->	<span class="contservo" channel="14" servotype="Parallax Continuous"></span>
+	<span class="contservo" channel="15" servotype="Parallax Continuous"></span>
+      </div>
+    </div>
+    <div>
+      <button id="resetbutton">Reset</button>
+    </div>
+    <div>
+      <p id="dot">&#149;<p>
+  </body>
+</html>
