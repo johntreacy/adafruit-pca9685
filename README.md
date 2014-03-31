@@ -38,7 +38,7 @@ pwm.setPulse(channel, pulse);
 pwm.stop();
 ```
 
-A demo using a web application is in the demo folder
+A demo web application is in the demo folder
 
 *Remember:* You must run your application as `root` 
 
