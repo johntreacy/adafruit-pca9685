@@ -111,10 +111,4 @@ $(function() {
     $("#motors > span, #leds > span").each(function() {
 	$(this).slider('value', $(this).attr('initval'));
     });
-    socket.on('ledon', function() {
-	$("#dot").css("color", "#aafaaa");
-    });
-    socket.on('ledoff', function() {
-	$("#dot").css("color", "green");
-    });
 });

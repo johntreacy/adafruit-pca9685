@@ -8,33 +8,17 @@ socketio = require('socket.io');
 //pwm = new PwmDriver(0x40);
 makePwm = require('adafruit-pca9685');
 pwm = makePwm({"freq": 50, "correctionFactor": 1.118});
-Gpio = require('onoff').Gpio;
-// pwm.setPWMFreq(45);
-    led = new Gpio(17, 'out');
-    button = new Gpio(18, 'in', 'both');
-    button.watch(function(err, value) {
-      if (err) {
-	  console.log("Button watch error: " + err);
-      }
-    led.write(1-value);
-    });
 
 process.on('SIGINT', function(code) {
     console.log("\nCtrl-C caught ...");
-//    button.unexport();
-//    led.unexport();
     process.exit(0);
 });
 process.on('SIGHUP', function(code) {
     console.log("exiting ...");
-//    button.unexport();
-//    led.unexport();
     process.exit(0);
 });
 process.on('exit', function(code) {
     console.log("exiting ...");
-    button.unexport();
-    led.unexport();
     process.exit(0);
 });
 exports.listen = function(server) {
@@ -46,15 +30,6 @@ exports.listen = function(server) {
     handlePwmPulseRequest(socket);
     handleStopRequest(socket);
     handleClientDisconnection(socket);
-//    led = new Gpio(17, 'out');
-//    button = new Gpio(18, 'in', 'both');
-    button.watch(function(err, value) {
-      if (err) {
-	  console.log("Button watch error: " + err);
-      }
-    led.write(1-value);
-    socket.emit(value == 0 ? 'ledon': 'ledoff');
-    });
   });
 };
 
@@ -80,8 +55,6 @@ function handleStopRequest(socket) {
 function handleClientDisconnection(socket) {
   socket.on('disconnect', function() {
     pwm.stop();
-//      button.unexport();
-//      led.unexport();
       console.log("client disconnected");
   });
 }
