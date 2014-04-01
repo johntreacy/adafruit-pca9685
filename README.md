@@ -42,6 +42,8 @@ A demo web application is in the demo folder
 
 *Remember:* You must run your application as `root` 
 
+## Acknowledgements
+
 Some of the design for this module is is based on the [Adafruit python Code Library] 
 (https://github.com/adafruit/Adafruit-Raspberry-Pi-Python-Code.git)
 
