@@ -42,9 +42,8 @@ A demo web application is in the demo folder
 
 *Remember:* You must run your application as `root` 
 
-Some of tthe design for this module is is based on the [Adafruit python Code Library] 
-://github.com/adafruit/Adafruit
--Raspberry-Pi-Python-Code.git)
+Some of the design for this module is is based on the [Adafruit python Code Library] 
+(https://github.com/adafruit/Adafruit-Raspberry-Pi-Python-Code.git)
 
 >  Here is a growing collection of libraries and example python scripts
 >  for controlling a variety of Adafruit electronics with a Raspberry Pi
