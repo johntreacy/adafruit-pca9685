@@ -7,7 +7,7 @@ This is a **node.js** library for driving the Adafruit 12 bit 16 channel PWM Dri
 Installation:
 
 ```sh
-npm install adafruit-pca9685 (eventually - not yet published to npm)
+npm install adafruit-pca9685 (eventually - not yet published to npm). Optionally, get it from github and run npm install.
 ```
 
 In your node.js file just require the library:
