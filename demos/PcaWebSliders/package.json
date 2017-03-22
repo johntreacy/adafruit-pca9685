@@ -1,0 +1,17 @@
+{
+  "name": "pcaSliders",
+  "version": "0.2.1",
+  "main": "server.js",
+  "author": {
+    "name": "John Treacy"
+  },
+  "description": "Demo program for PWM module for controlling the Adafruit 16-channel 12-bit PWM/Servo driver",
+  "dependencies": {
+    "mime": ">1.2.11",
+    "onoff": ">0.3.0",
+    "socket.io":  ">0.9.16"
+  },
+  "repository": "https://github.com/johntreacy/adafruit-pca9685.git",
+  "license": "MIT",
+  "readme": "README.txt"
+}
