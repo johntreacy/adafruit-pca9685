@@ -17,15 +17,11 @@
 
 // -------------------------BEGIN MODULE SCOPED VARIABLES ------------------------------
 var
-    i2c, i2cSend, i2cRead, // i2c instance and functions to wrap writing/reading
+    i2cSend, i2cRead, // i2c functions to wrap writing/reading
     clearAll,  // convenience function to turn off all pwms at once
-    frequency, setFrequency, getFrequency, // private property and accessor
     isValidFreq, isValidChannel, isValidPwm, isValidPulse, // validators for args to public methods
 
-    // public methods
-    setFreq, setPwm, setPulse, stop,
-
-    //PCA9685 Address constants
+        //PCA9685 Address constants
     __MODE1 = 0x00,
     __PRESCALE = 0xFE,
     __LED0_ON_L = 0x06,
@@ -131,9 +127,7 @@ makePwm = function (arg_map) {
 
     pwm.setFreq = function (freq, correctionFactor) {
         if (!isValidFreq(freq)) throw new Error("Frequency must be between 40 and 1000 Hz");
-        var oldmode, newmode, prescale;
-        prescaleval = 25000000;
-        this.frequency=freq;
+        var oldmode, newmode, prescale, prescaleval;
         correctionFactor = correctionFactor || 1.0;
         prescaleval = 25000000;
         prescaleval /= 4096.0;
@@ -191,12 +185,13 @@ makePwm = function (arg_map) {
 
     // Turn on debugging if asked
     if (arg_map['debug'] === true) {
+        
         pwm.debug = {
             getFrequency: function () {
-                return this.frequency;
+                return pwm.frequency;
             },
             getCorrectionFactor: function () {
-                return this.correctionFactor;
+                return pwm.correctionFactor;
             }
         };
     }
