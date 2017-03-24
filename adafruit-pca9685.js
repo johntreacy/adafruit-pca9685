@@ -48,7 +48,7 @@ var
 // method i2cSend: utility function to wrap i2c.writeBytes 
 //   cmd is one of the PCA9685 addresses above, values is context dependent on which command
 //   see the PCA9685 datasheet for details
-i2cSend = function(cmd, values) {
+i2cSend = function(i2c, cmd, values) {
     if (!(values instanceof Array))
       values = [values];
     i2c.writeBytes(cmd, values, function(error) {
@@ -59,7 +59,7 @@ i2cSend = function(cmd, values) {
 
 // method i2cRead(): utility to wrap i2c.readBytes
 //   cmd is one of the PCA9685 addresses above, length is # of bytes
-i2cRead = function(cmd, length) {
+i2cRead = function(i2c, cmd, length) {
     var result;
     i2c.readBytes(cmd, length, function (err, res) {
 	if (err != null) {
@@ -84,8 +84,8 @@ getFrequency = function() {
 };
 
 // clearAll - Turn off all channels at once - useful for setup and shutdown
-clearAll = function() {
-    i2cSend(__ALLLED_OFF_H, 0x10);
+clearAll = function(i2c) {
+    i2cSend(i2c,__ALLLED_OFF_H, 0x10);
 }
 
 isValidChannel = function(channel) {
@@ -112,65 +112,7 @@ isValidFreq = function(freq) {
 
 //-------------------------- BEGIN PWM PUBLIC METHODS  -------------------------
 
-// method setFreq(frequency, correctionfactor) 
-// correction factor may be needed to get actual frequency - ymmv
-// I have found that 1.118 correction factor with 50 hz gives me very close to 50
-// but 50 with no factor gives over 55 Hz measured with a logic analyzer
 
-setFreq = function(freq, correctionFactor) {
-    if (! isValidFreq(freq)) throw new Error("Frequency must be between 40 and 1000 Hz");
-    var oldmode, newmode, prescale, 
-      prescaleval = 25000000;
-    setFrequency(freq);
-    correctionFactor = correctionFactor || 1.0;
-    prescaleval = 25000000;
-    prescaleval /= 4096.0;
-    prescaleval /= freq;
-    prescaleval -= 1.0;
-    prescale = Math.floor(prescaleval * correctionFactor + 0.5);
-    oldmode = i2cRead(__MODE1, 1);
-    newmode = (oldmode & 0x7F) | 0x10;	
-    i2cSend(__MODE1, newmode);
-    i2cSend(__PRESCALE, Math.floor(prescale));
-    i2cSend(__MODE1, oldmode);
-    sleep.usleep(10000);
-    i2cSend(__MODE1, oldmode | 0x80);
-}
-
-// method setPwm(channel, off, on)
-// Set the pwm on off values 0-4095 for a channel 0-15
-
-setPwm = function(channel, pulseon, pulseoff) {
-    // validate inputs
-    if (!( isValidChannel(channel)
-	   && isValidPwm(pulseon)
-	   && isValidPwm(pulseoff)
-	 )) throw new Error("Ivalid inputs to setPwm");
-    // inputs ok
-    i2cSend(__LED0_ON_L+4*channel, pulseon & 0xFF);
-    i2cSend(__LED0_ON_H+4*channel, pulseon >> 8);
-    i2cSend(__LED0_OFF_L+4*channel, pulseoff & 0xFF);
-    i2cSend(__LED0_OFF_H+4*channel, pulseoff >> 8);
-}
-
-// method setPulse(channel, pulse)
-// Set pwm on at time 0 and off a number of microseconds later
-setPulse = function(channel, pulse) {
-    if (! isValidChannel(channel)) throw new Error("Channel must be between 0 and 15");
-    if (! isValidPulse(pulse)) throw new Error("Pulse must be > 0 and less than PWM period");
-    var pulseLength;
-    pulseLength = 1000000; // usecs in a second
-    pulseLength /= getFrequency(); // period of a pulse, eg 20 ms
-    pulseLength /= 4096; // 12 bit resolution - time per 1 unit 
-    pulse /= pulseLength;
-    setPwm(channel, 0, Math.floor(pulse));
-}
-
-// method stop() 
-// leave everything in a clean state
-stop = function() {
-    clearAll();
-}
 
 // ** Constructor makePwm() ** 
 // This is the only object exported by the module using require().
@@ -183,33 +125,87 @@ stop = function() {
 //    debug: make additional debug functionality available
 
 makePwm = function( arg_map ) {
-    var pwm, address, deviceName, correctionFactor;
-    arg_map = arg_map || {};
-    pwm = {
-      setFreq    : setFreq,
-      setPwm     : setPwm,
-      setPulse   : setPulse,
-      stop       : stop
+    var pwm = new Object;
+    var params = new Object;
+    
+   // set device parameters using arg_map values or defaults
+    arg_map = arg_map || {}; 
+    params.frequency= arg_map['freq'] || 50;
+    params.address = arg_map['address'] || 0x40;
+    params.deviceName = arg_map['device'] || '/dev/i2c-1';
+    params.correctionFactor = arg_map['correctionFactor'] || 1.0;
+
+    // method setFreq(frequency, correctionfactor)
+    // correction factor may be needed to get actual frequency - ymmv
+    // I have found that 1.118 correction factor with 50 hz gives me very close to 50
+    // but 50 with no factor gives over 55 Hz measured with a logic analyzer
+
+    pwm.setFreq = function(freq, correctionFactor) {
+	if (! isValidFreq(freq)) throw new Error("Frequency must be between 40 and 1000 Hz");
+	var oldmode, newmode, prescale; 
+	prescaleval = 25000000;
+	setFrequency(freq);
+	correctionFactor = correctionFactor || 1.0;
+	prescaleval = 25000000;
+	prescaleval /= 4096.0;
+	prescaleval /= freq;
+	prescaleval -= 1.0;
+	prescale = Math.floor(prescaleval * correctionFactor + 0.5);
+	oldmode = i2cRead(this.i2c,__MODE1, 1);
+	newmode = (oldmode & 0x7F) | 0x10;	
+	i2cSend(this.i2c,__MODE1, newmode);
+	i2cSend(this.i2c,__PRESCALE, Math.floor(prescale));
+	i2cSend(this.i2c,__MODE1, oldmode);
+	sleep.usleep(10000);
+	i2cSend(this.i2c,__MODE1, oldmode | 0x80);
+    }
+
+    // Set the pwm on off values 0-4095 for a channel 0-15
+
+    pwm.setPwm = function(channel, pulseon, pulseoff) {
+    // validate inputs
+    if (!( isValidChannel(channel)
+           && isValidPwm(pulseon)
+           && isValidPwm(pulseoff)
+         )) throw new Error("Ivalid inputs to setPwm");
+    // inputs ok
+	i2cSend(this.i2c,__LED0_ON_L+4*channel, pulseon & 0xFF);
+	i2cSend(this.i2c,__LED0_ON_H+4*channel, pulseon >> 8);
+	i2cSend(this.i2c,__LED0_OFF_L+4*channel, pulseoff & 0xFF);
+	i2cSend(this.i2c,__LED0_OFF_H+4*channel, pulseoff >> 8);
+    };
+    
+    pwm.setPulse = function(channel, pulse) {
+      if (! isValidChannel(channel)) throw new Error("Channel must be between 0 and 15");
+      if (! isValidPulse(pulse)) throw new Error("Pulse must be > 0 and less than PWM period");
+      var pulseLength;
+      pulseLength = 1000000; // usecs in a second
+      pulseLength /= getFrequency(); // period of a pulse, eg 20 ms
+      pulseLength /= 4096; // 12 bit resolution - time per 1 unit
+      pulse /= pulseLength;
+      this.setPwm(channel, 0, Math.floor(pulse));
     };
 
-    // set device parameters using arg_map values or defaults 
-    setFrequency(arg_map['freq'] || 50);
-    address = arg_map['address'] || 0x40;
-    deviceName = arg_map['device'] || '/dev/i2c-1';
-    correctionFactor = arg_map['correctionFactor'] || 1.0;
+    // method stop() 
+    // leave everything in a clean state
+      pwm.stop = function() {
+      clearAll(this.i2c);
+      };
 
     // get an i2c connection to the pwm board, initialize frequency and set all channels off
-    i2c = new I2C(address,{device: deviceName});
-    i2cSend(__MODE1, 0x00);
-    pwm.setFreq(frequency, correctionFactor);
-    clearAll();
+    pwm.i2c = new I2C(params.address,{device: params.deviceName});
+    i2cSend(pwm.i2c,__MODE1, 0x00);
+    pwm.setFreq(params.frequency, params.correctionFactor);
+    clearAll(pwm.i2c);
 
     // Turn on debugging if asked
     if (arg_map['debug'] === true) {
 	pwm.debug = {
-	    getFrequency: getFrequency,
+	    getFrequency: function() {
+		return params.frequency;
+	    },
 	    getCorrectionFactor: function(){
-		return correctionFactor;
+		return params.correctionFactor;
 	    }
 	};
     }
