@@ -1,6 +1,6 @@
 {
   "name": "adafruit-pca9685",
-  "version": "0.1.1",
+  "version": "0.1.5",
   "main": "adafruit-pca9685.js",
   "author": {
     "name": "John Treacy"
